@@ -1,8 +1,66 @@
 /*
  * Create a list that holds all of your cards
  */
+let pairs = 0;
+let lastCard = {};
+let lastCardId;
+let cards = [
+			   {'symbol' : 'diamond', 'flipped' : false },
+			   {'symbol' : 'diamond', 'flipped' : false } ,
+			   {'symbol' : 'paper-plane-o', 'flipped' : false },
+			   {'symbol' : 'paper-plane-o', 'flipped' : false },
+			   {'symbol' : 'anchor', 'flipped' : false } ,
+			   {'symbol' : 'anchor', 'flipped' : false },
+			   {'symbol' : 'bolt', 'flipped' : false },
+			   {'symbol' : 'bolt', 'flipped' : false },
+			   {'symbol' : 'cube', 'flipped' : false },
+			   {'symbol' : 'cube', 'flipped' : false },
+			   {'symbol' : 'leaf', 'flipped' : false },
+			   {'symbol' : 'leaf', 'flipped' : false },
+			   {'symbol' : 'bicycle', 'flipped' : false },
+			   {'symbol' : 'bicycle', 'flipped' : false },
+			   {'symbol' : 'bomb', 'flipped' : false },
+			   {'symbol' : 'bomb', 'flipped' : false },
+		   	];
 
 
+
+//initialize board, shuffles cards, recreates grid of cards
+cards = shuffle(cards);
+const deckEl = document.querySelector('.deck');
+let deckHTML = '';
+for(let i= 0; i<cards.length; i++) {
+	deckHTML += `<li data-id="${i}" class="card"><i class="fa fa-${cards[i].symbol}"></i></li>`;
+}
+deckEl.innerHTML = deckHTML;
+
+
+document.querySelector('.deck').addEventListener('click', function(e){
+	if(e.target.tagName === 'LI') {
+		e.target.classList.add('show');
+		e.target.classList.add('open');
+		let index = e.target.dataset.id;
+		let card = cards[index];
+		card.flipped = true;
+		if(lastCard.symbol === undefined) {
+			lastCard = card;
+			lastCardId = index;
+		} else {
+			//if there's already a card that has been flipped then check if they are a match
+			if(lastCard.symbol === card.symbol) {
+				
+			//no match reset last card
+			} else {
+				let lastCardEl = document.querySelector('.card[data-id="' + lastCardId + '"]');
+				lastCard = {};
+				//resetCards(lastCardEl, e.target);
+			}
+		}
+	}
+});
+
+
+			
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
