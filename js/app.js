@@ -1,73 +1,23 @@
-/*
- * Create a list that holds all of your cards
- */
-let pairs = 0;
-let lastCard = {};
-let lastCardId;
+
 let cards = [
-			   {'symbol' : 'diamond', 'flipped' : false },
-			   {'symbol' : 'diamond', 'flipped' : false } ,
-			   {'symbol' : 'paper-plane-o', 'flipped' : false },
-			   {'symbol' : 'paper-plane-o', 'flipped' : false },
-			   {'symbol' : 'anchor', 'flipped' : false } ,
-			   {'symbol' : 'anchor', 'flipped' : false },
-			   {'symbol' : 'bolt', 'flipped' : false },
-			   {'symbol' : 'bolt', 'flipped' : false },
-			   {'symbol' : 'cube', 'flipped' : false },
-			   {'symbol' : 'cube', 'flipped' : false },
-			   {'symbol' : 'leaf', 'flipped' : false },
-			   {'symbol' : 'leaf', 'flipped' : false },
-			   {'symbol' : 'bicycle', 'flipped' : false },
-			   {'symbol' : 'bicycle', 'flipped' : false },
-			   {'symbol' : 'bomb', 'flipped' : false },
-			   {'symbol' : 'bomb', 'flipped' : false },
+			   {'symbol' : 'diamond'},
+			   {'symbol' : 'diamond'},
+			   {'symbol' : 'paper-plane-o'},
+			   {'symbol' : 'paper-plane-o'},
+			   {'symbol' : 'anchor'},
+			   {'symbol' : 'anchor'},
+			   {'symbol' : 'bolt'},
+			   {'symbol' : 'bolt'},
+			   {'symbol' : 'cube'},
+			   {'symbol' : 'cube'},
+			   {'symbol' : 'leaf'},
+			   {'symbol' : 'leaf'}, 
+			   {'symbol' : 'bicycle'},
+			   {'symbol' : 'bicycle'},
+			   {'symbol' : 'bomb'},
+			   {'symbol' : 'bomb'}
 		   	];
-
-
-
-//initialize board, shuffles cards, recreates grid of cards
-cards = shuffle(cards);
-const deckEl = document.querySelector('.deck');
-let deckHTML = '';
-for(let i= 0; i<cards.length; i++) {
-	deckHTML += `<li data-id="${i}" class="card"><i class="fa fa-${cards[i].symbol}"></i></li>`;
-}
-deckEl.innerHTML = deckHTML;
-
-
-document.querySelector('.deck').addEventListener('click', function(e){
-	if(e.target.tagName === 'LI') {
-		e.target.classList.add('show');
-		e.target.classList.add('open');
-		let index = e.target.dataset.id;
-		let card = cards[index];
-		card.flipped = true;
-		if(lastCard.symbol === undefined) {
-			lastCard = card;
-			lastCardId = index;
-		} else {
-			//if there's already a card that has been flipped then check if they are a match
-			if(lastCard.symbol === card.symbol) {
-				
-			//no match reset last card
-			} else {
-				let lastCardEl = document.querySelector('.card[data-id="' + lastCardId + '"]');
-				lastCard = {};
-				//resetCards(lastCardEl, e.target);
-			}
-		}
-	}
-});
-
-
-			
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
-
+let starEl = document.querySelectorAll('.stars li');
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -82,15 +32,165 @@ function shuffle(array) {
 
     return array;
 }
+let showCard = function(card) {
+	card.classList.toggle('show');
+	card.classList.toggle('open');
+};
+
+let resetCards = function(cardOne, cardTwo) {
+	//simulates animation to show the fail status by showing red
+	cardOne.classList.toggle('open');
+	cardTwo.classList.toggle('open');
+	cardTwo.classList.toggle('fail');
+	cardOne.classList.toggle('fail');
+
+	//after a second of them seeing the failure the cards will turn back over 
+	setTimeout(function() {
+	    cardOne.classList.toggle('fail');
+	    cardTwo.classList.toggle('fail');
+	    cardOne.classList.toggle('show');
+	    cardTwo.classList.toggle('show');
+	}, 1000);
+};
+
+let matchCards = function(cardOne, cardTwo) {
+	cardOne.classList.toggle('open');
+	cardTwo.classList.toggle('open');
+	cardOne.classList.toggle('match');
+	cardTwo.classList.toggle('match');
+};
+
+let getTime = function(time) {
+		time = new Date(time);
+		const hours = time.getUTCHours();
+		const minutes = time.getUTCMinutes();
+		const seconds = time.getUTCSeconds();
+		timeString = (hours > 0 ? (hours === 1 ? hours + ' hour and ' : hours + ' hours and ') : '') + (minutes > 0 ? (minutes === 1 ? minutes + ' minute and ' : minutes + ' minutes and ') : '') + (seconds > 0 ? (seconds === 1 ? seconds + ' second' : seconds + ' seconds') : '');
+		return timeString;
+}
 
 
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
+
+
+function runGame() {
+	var moves;
+	var stars;
+	var pairs;
+	var lastCard;
+	var lastCardId;
+	var startTime;
+	var timer;
+	const moveEl = document.querySelector('.moves');
+
+	document.querySelector('.restart').addEventListener('click', restartGame);
+
+	function restartGame(){
+		if(document.querySelector('.winModal')!==null) {
+			document.querySelector('.winModal').remove();
+		}
+		starEl.forEach(function(star){
+			star.classList.remove('hide');
+		});
+		initializeGame();
+	};
+
+	function increaseMoveCounter(){
+		moves++;
+		moveEl.innerHTML = moves;
+		switch(moves) {
+			case 12:
+				starEl[2].classList.toggle('hide');
+				stars = 2;
+				break;
+			case 24:
+				starEl[1].classList.toggle('hide');
+				stars = 1;
+				break;
+			case 48:
+				starEl[0].classList.toggle('hide');
+				stars = 0;
+				break;
+		}
+	}
+
+	//function for card click 
+	function clickCard(e){
+		if(e.target.tagName === 'LI' && !e.target.classList.contains('show')) {
+			//changes css of card to show that it's been flipped over
+			showCard(e.target);
+			let index = e.target.dataset.id;
+			let card = cards[index];
+			if(lastCard.symbol === undefined) {
+				increaseMoveCounter();
+				//sets last card if there wasnt previously one (one card is turned over)
+				lastCard = card;
+				lastCardId = index;
+			} else {
+				let lastCardEl = document.querySelector('.card[data-id="' + lastCardId + '"]');
+
+				//if there's already a card that has been flipped then check if they are a match
+				//by checking the symbols
+				if(lastCard.symbol === card.symbol) {
+					matchCards(lastCardEl, e.target);
+					pairs++;
+					if(pairs===8) {
+						debugger;
+						winGame();
+					}
+					lastCard = {};
+				//no match reset last card
+				} else {
+					lastCard = {};
+					resetCards(lastCardEl, e.target);
+				}
+			}
+		}
+	};
+	//stops timer, and sends win message to user
+	function winGame() {
+		clearInterval(timer);
+		let time = performance.now() - startTime;
+		timeString = getTime(time);
+		let modalHTML = '<div class="winModal"><div class="winMessage">Congratulations! You won! Your game time was ' + (timeString) + ' with a ' + stars + ' star rating!<br><button class="modal-restart">Play Again?</button></div></div>';
+		document.querySelector('body').insertAdjacentHTML('afterbegin', modalHTML);
+		document.querySelector('.modal-restart').addEventListener('click', restartGame);
+	}
+
+	function initializeGame(){
+		//resets variables to 0 for a new game
+		pairs = 0;
+		lastCard = {};
+		moves = 0;
+		stars = 3;
+
+		//shuffles cards and creates the grid
+		cards = shuffle(cards);
+		const deckEl = document.querySelector('.deck');
+		moveEl.innerHTML = moves;
+		let deckHTML = '';
+		for(let i= 0; i<cards.length; i++) {
+			deckHTML += `<li data-id="${i}" class="card"><i class="fa fa-${cards[i].symbol}"></i></li>`;
+		}
+		deckEl.innerHTML = deckHTML;
+
+		//sets the event listener for the card click
+		document.querySelector('.deck').addEventListener('click', clickCard);
+		startTime = performance.now();
+
+		//timer that will update every second showing the user how long they've been playing for
+		timer = setInterval(function() { 
+			let time = performance.now() - startTime;
+			timeString = getTime(time);
+			document.querySelector('.timer').innerHTML = timeString;
+		}, 1000);
+
+ 	}
+ 	//runs game 
+ 	initializeGame();
+};
+
+
+runGame();
+
+
+

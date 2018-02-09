@@ -82,9 +82,9 @@ h1 {
 }
 
 .deck .card.fail {
-    cursor:default;
-    background:red;
-    font-size:33px;
+    cursor: default;
+    background: red;
+    font-size: 33px;
 }
 
 /*
@@ -112,4 +112,48 @@ h1 {
 .score-panel .restart {
     float: right;
     cursor: pointer;
+}
+
+.hide{
+    display: none!important;
+}
+
+.winModal {
+    position: fixed; 
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background: rgba(0,0,0,0.8);
+    z-index: 99999;
+    opacity:1;
+    -webkit-transition: opacity 400ms ease-in;
+    -moz-transition: opacity 400ms ease-in;
+    transition: opacity 400ms ease-in;
+    pointer-events: auto;
+}
+
+.winMessage { 
+    width: 400px;
+
+    text-align: center;
+    position: relative;
+    margin: 10% auto;
+    padding: 15px;
+    border-radius: 10px;
+    background: #fff;
+    background: -moz-linear-gradient(#fff, #999);
+    background: -webkit-linear-gradient(#fff, #999);
+    background: -o-linear-gradient(#fff, #999);
+}
+
+.modal-restart{
+    padding: 7px 15px 7px 15px;
+    margin-top: 15px;
+}
+
+.timer {
+    display: inline-block;
+    margin-left: 5px;
 }
