@@ -1,20 +1,16 @@
-# Memory Game Project
+# Udacity Matching Game
 
-## Table of Contents
+## Purpose:
 
-* [Instructions](#instructions)
-* [Contributing](#contributing)
+The purpose of this project is to demonstrate Javascript, HTML and CSS skills.
 
-## Instructions
+### How to Play
 
-The starter project has some HTML and CSS styling to display a static version of the Memory Game project. You'll need to convert this project from a static project to an interactive one. This will require modifying the HTML and CSS files, but primarily the JavaScript file.
+The game board consists of 16 cards arranged randomly in a grid. The deck is made up of 8 different pairs of cards, each with different symbols.
 
-To get started, open `js/app.js` and start building out the app's functionality
+Click a card to reveal it's symbol. Next attempt to find the card that matches the first card's symbol. If you find it then you complete the pair and they are flipped for the duration of the game. If you don't find it, both will flip back over to it's original state. 
 
-For specific, detailed instructions, look at the project instructions in the [Udacity Classroom](https://classroom.udacity.com/me).
+To win you must find all the pairs. 
 
-## Contributing
-
-This repository is the starter code for _all_ Udacity students. Therefore, we most likely will not accept pull requests.
-
-For details, check out [CONTRIBUTING.md](CONTRIBUTING.md).
+## Resources used
+Shuffle function from http://stackoverflow.com/a/2450976
